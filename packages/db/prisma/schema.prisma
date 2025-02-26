@@ -28,15 +28,18 @@ enum StatusEnum {
 }
 
 model OutputImages {
-  id        String   @id @default(uuid())
-  imageUrl  String
-  modelId   String
-  prompt    String
-  status    StatusEnum      @default(Pending)
-  userId    String
-  model     Model    @relation(fields: [modelId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  id             String     @id @default(uuid())
+  imageUrl       String     @default("")
+  modelId        String
+  prompt         String
+  status         StatusEnum @default(Pending)
+  userId         String
+  falAiRequestId String?
+  model          Model      @relation(fields: [modelId], references: [id])
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @default(now())
+
+  @@index([falAiRequestId])
 }
 
 model Packs {
@@ -52,20 +55,33 @@ model PackPrompts {
   pack   Packs  @relation(fields: [packId], references: [id])
 }
 
+enum ModelTrainingStatusEnum {
+  Pending
+  Completed
+  Failed
+}
+
 model Model {
-  id             String              @id @default(uuid())
+  id             String                  @id @default(uuid())
   name           String
   type           ModelTypeEnum
   age            Int
   ethinicity     ModelEthinicityEnum
-  eyeColor       EyeColorEnum 
-  userId         String 
+  status         ModelTrainingStatusEnum @default(Pending)
+  eyeColor       EyeColorEnum
+  triggerWord    String?
+  zipUrl         String?
+  tensorPath     String?
+  userId         String
   bald           Boolean
   images         String[]
+  falAiRequestId String?
   outputImages   OutputImages[]
   trainingImages TrainingImages[]
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @default(now())
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @default(now())
+
+  @@index([falAiRequestId])
 }
 
 model TrainingImages {
@@ -84,11 +100,11 @@ enum ModelTypeEnum {
 enum ModelEthinicityEnum {
   White
   Black
-  Asian_American  
-  East_Asian      
-  South_East_Asian 
-  South_Asian     
-  Middle_Eastern  
+  Asian_American
+  East_Asian
+  South_East_Asian
+  South_Asian
+  Middle_Eastern
   Pacific
   Hispanic
 }
