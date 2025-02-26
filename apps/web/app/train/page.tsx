@@ -80,9 +80,9 @@ const Train = () => {
 
     const res = await axios.post(`${BACKEND_URL}/ai/training`, input,{
       headers:{
-        token:`Bearer ${token}`
+        authorization:`Bearer ${token}`
       }
-    });
+    });3
     console.log(res)
     router.push("/")
   };

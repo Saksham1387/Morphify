@@ -1,84 +1,77 @@
-# Turborepo starter
+<img src="./readme-image.png">
 
-This Turborepo starter is maintained by the Turborepo core team.
+# PhotoIo
 
-## Using this example
+PhotoIo is an advanced image generation platform that allows users to train their own models and generate images from them. Users can fine-tune models based on their preferences and create unique visuals using text-based prompts.
 
-Run the following command:
+## Features
 
-```sh
-npx create-turbo@latest
-```
+- **Custom Model Training** – Train your own models with your dataset.
+- **Text-to-Image Generation** – Generate images using AI-powered models with custom prompts.
+- **Efficient Backend** – Powered by Bun and Express for high-performance API handling.
+- **User Authentication** – Secure login and model management.
+- **Fast Processing** – Optimized workflows for quick model training and image generation.
 
-## What's inside?
+## Tech Stack
 
-This Turborepo includes the following packages/apps:
+- **Frontend**: Next.js
+- **Backend**: Bun with Express
+- **Database**: PostgresSQL
+- **Authentication**: I have used Clerk as the major authentication and synced my and clerks databases
 
-### Apps and Packages
+## Architecture
+The flow starts at the clerks authentication and a webhook is called by the clerk to updated the application database to maintain the state consistent.Then the user trains a model by specifying the features of the model (human in the images).
+I have outsourced the model training and generation part to FalAi. The training request is send to the FalAi apis and eventually a webhook is called when the model is done training.
+Then the user can hit the generate endpoint to generate the images with the specified prompt.
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+User ----> Clerk Auth.
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+Train ----> Images are zipped ----> Uploaded to S3 ----> Url returned ----> FalAi ----> Webhook ----> Training Done
 
-### Utilities
+Generate Images ----> FalAi
 
-This Turborepo has some additional tools already setup for you:
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+### Prerequisites
+- Node.js / Bun
+- Database 
 
-### Build
+## Installation
+### Setup Instructions
 
-To build all apps and packages, run the following command:
+1. **Clone the Repository**
+   ```sh
+   git clone https://github.com/yourusername/PhotoIo.git
+   cd PhotoIo
+   ```
+2. **Install Dependencies**
+   ```sh
+   bun install
+   ```
+3. **Start the Backend Server**
+   ```sh
+   bun run start
+   ```
+4. **Start the Frontend**
+   ```sh
+   cd frontend
+   bun run dev
+   ```
+5. **Access the Application**
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-```
-cd my-turborepo
-pnpm build
-```
+## Usage
 
-### Develop
+1. Sign up and log in to your account.
+2. Upload your dataset and train a custom AI model.
+3. Use text prompts to generate images based on your trained model.
+4. Download and share your generated images.
 
-To develop all apps and packages, run the following command:
+## Contribution
 
-```
-cd my-turborepo
-pnpm dev
-```
+Contributions are welcome! If you’d like to improve PhotoIo, feel free to fork the repo and create a pull request.
 
-### Remote Caching
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+## Contact
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+For any inquiries, feel free to reach out at [your.email@example.com](mailto:your.email@example.com) or open an issue in the repository.
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)

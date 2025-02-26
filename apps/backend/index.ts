@@ -38,7 +38,7 @@ app.get("/pre-signed-url", (req, res) => {
 
 app.post("/ai/training", async (req, res) => {
   const parsedBody = TrainModel.safeParse(req.body);
-
+  const userId = req.userId
   const images = req.body.images;
 
   if (!parsedBody.success) {
@@ -52,6 +52,7 @@ app.post("/ai/training", async (req, res) => {
   //   parsedBody.data.zipUrl,
   //   parsedBody.data.name
   // );
+
   const request_id = "312"
   const response_url = "fmkods"
   const data = await prismaClient.model.create({
@@ -62,8 +63,8 @@ app.post("/ai/training", async (req, res) => {
       type: parsedBody.data.type,
       eyeColor: parsedBody.data.eyeColor,
       bald: parsedBody.data.bald,
-      userId: USERid,
       falAiRequestId: request_id,
+      userId:userId
     },
   });
 
@@ -74,6 +75,7 @@ app.post("/ai/training", async (req, res) => {
 
 app.post("/ai/generate", async (req, res) => {
   const parsedBody = GenerateImage.safeParse(req.body);
+  const userId = req.userId
   if (!parsedBody.success) {
     res.status(411).json({
       message: "Invalid Input",
@@ -101,7 +103,7 @@ app.post("/ai/generate", async (req, res) => {
   const data = await prismaClient.outputImages.create({
     data: {
       prompt: parsedBody.data?.prompt,
-      userId: USERid,
+      userId,
       imageUrl: "",
       modelId: parsedBody.data.modelId,
       falAiRequestId: request_id,
@@ -115,6 +117,7 @@ app.post("/ai/generate", async (req, res) => {
 
 app.post("/pack/generate", async (req, res) => {
   const parsedBody = GenerateImagesFromPack.safeParse(req.body);
+  const userId = req.userId
   if (!parsedBody.success) {
     res.status(411).json({
       message: "Invalid Input",
@@ -138,7 +141,7 @@ app.post("/pack/generate", async (req, res) => {
     data: prompts.map((prompt, index) => {
       return {
         prompt: prompt.prompt,
-        userId: USERid,
+        userId,
         imageUrl: "",
         modelId: parsedBody.data.modelId,
         falAiRequestId: request_ids[index].request_id,
@@ -160,11 +163,12 @@ app.get("/image/bulk", async (req, res) => {
   const ids = req.query.ids as string[];
   const limit = (req.query.limit as string) ?? "10";
   const offset = (req.query.offset as string) ?? "0";
+  const userId = req.userId
 
   const data = await prismaClient.outputImages.findMany({
     where: {
       id: { in: ids },
-      userId: USERid,
+      userId
     },
     skip: parseInt(offset),
     take: parseInt(limit),
